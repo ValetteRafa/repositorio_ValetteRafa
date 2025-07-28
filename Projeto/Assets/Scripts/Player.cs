@@ -1,32 +1,59 @@
-using UnityEngine;
+using System;
 using UnityEngine;
 
-public class PLAYER : MonoBehaviour
+public class Player : MonoBehaviour
 {
-    private int numero;
-    public float velocidade = 0.7f;
+    
+    public float velocidade = 40;
+    public float forcaDoPulo = 4;
+    
+    private bool noChao = false;
+    
+    private SpriteRenderer sprite;
+    private Rigidbody2D rb;
+    
+       void Start()
+       {
+           sprite = GetComponent<SpriteRenderer>();
+           rb = GetComponent<Rigidbody2D>();
+       }
 
-    void Start()
+       
+   void Update()
     {
-        numero = 0;
+        if (Input.GetKey(KeyCode.A))
+        {
+            gameObject.transform.position += new Vector3(-velocidade * Time.deltaTime,0,0);
+            sprite.flipX = true;
+        }
+        
+        if (Input.GetKey(KeyCode.D))
+        {
+            gameObject.transform.position += new Vector3(velocidade * Time.deltaTime,0,0);
+            sprite.flipX = false;
+        }
+
+        if (Input.GetKeyDown(KeyCode.Space) && noChao == true)
+        {
+            rb.AddForce(new Vector2(0,forcaDoPulo), ForceMode2D.Impulse);
+        }
+
     }
 
-    // Update is called once per frame
-    void Update()
+    void OnCollisionEnter2D(Collision2D colisao)
     {
-        // Debug.Log(numero);
-        //numero = numero + 1;
+        //if (colisao.gameObject.tag == "Chao")
+        if(colisao.gameObject.CompareTag("Chao"))
+        {
+            noChao = true;
+        }
+    }
 
-        if (Input.GetKey(KeyCode.A))
-            gameObject.transform.position += new Vector3(-velocidade * Time.deltaTime, 0, 0);
-
-        if (Input.GetKey(KeyCode.D))
-            gameObject.transform.position += new Vector3(velocidade * Time.deltaTime, 0, 0);
-
-        if (Input.GetKey(KeyCode.S))
-            gameObject.transform.position += new Vector3(0, -velocidade * Time.deltaTime, 0); // Corrigido a linha aqui
-
-        if (Input.GetKey(KeyCode.W))
-            gameObject.transform.position += new Vector3(0, velocidade * Time.deltaTime, 0); // Corrigido a linha aqui
+    void OnCollisionExit2D(Collision2D colisao)
+    {
+        if(colisao.gameObject.CompareTag("Chao"))
+        {
+            noChao = false;
+        }
     }
 }
