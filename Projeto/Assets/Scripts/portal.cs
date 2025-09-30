@@ -1,14 +1,15 @@
 using System;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 
-public class Dano : MonoBehaviour
+public class Chave : MonoBehaviour
 {
+    public GameObject textoDeVitoria;
     private void OnCollisionEnter2D(Collision2D other)
     {
         if (other.gameObject.CompareTag("Player"))
         {
-            SceneManager.LoadScene(SceneManager.GetActiveScene().name);          
+            textoDeVitoria.SetActive(true);
+            gameObject.SetActive(false);
         }
     }
 }
